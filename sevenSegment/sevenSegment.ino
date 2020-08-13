@@ -4,10 +4,12 @@
 #define SEGMENT_ON HIGH
 #define SEGMENT_OFF LOW
 
-const int digitPin = 8;
+// 4 3 2 1
+const int digitPins[] = {4, 3, 2, 8};
+const int digitPinsLength = sizeof(digitPins) / sizeof(digitPins[0]);
 // A B C D E F G DP
 const int segmentPins[] = {6, 5, 12, 10, 9, 7, 13, 11};
-const int numberOfSegmentPins = sizeof(segmentPins) / sizeof(segmentPins[0]);
+const int segmentPinsLength = sizeof(segmentPins) / sizeof(segmentPins[0]);
 
 const int digits[] = {
     0b00111111, // 0
@@ -25,16 +27,45 @@ const int dot = 0b10000000;
 
 void displayNumber(int n)
 {
-  for (int i = 0; i < numberOfSegmentPins; i++)
+  for (int i = 0; i < segmentPinsLength; i++)
   {
     pinMode(segmentPins[i], digits[n] & (1 << i) ? SEGMENT_ON : SEGMENT_OFF);
   }
 }
 
+void displayNumbers(int n)
+{
+  for (int i = 0; i < digitPinsLength; i++)
+  {
+    digitalWrite(digitPins[i], DIGIT_ON);
+    displayNumber(n % 10);
+    delay(1);
+    for (int j = 0; j < segmentPinsLength; j++)
+    {
+      digitalWrite(segmentPins[j], SEGMENT_OFF);
+    }
+    digitalWrite(digitPins[i], DIGIT_OFF);
+    n /= 10;
+  }
+}
+
+void countUp()
+{
+  for (int i = 0; i < 10000; i++)
+  {
+    displayNumbers(i);
+  }
+}
+
 void setup()
 {
-  pinMode(digitPin, OUTPUT);
-  for (int i = 0; i < numberOfSegmentPins; i++)
+  for (int i = 0; i < digitPinsLength; i++)
+  {
+    int pin = digitPins[i];
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, DIGIT_OFF);
+  }
+  for (int i = 0; i < segmentPinsLength; i++)
   {
     int pin = segmentPins[i];
     pinMode(pin, OUTPUT);
@@ -44,10 +75,5 @@ void setup()
 
 void loop()
 {
-  digitalWrite(digitPin, DIGIT_ON);
-  for (int i = 0; i < sizeof(digits) / sizeof(digits[0]); i++)
-  {
-    displayNumber(i);
-    delay(500);
-  }
+  countUp();
 }
