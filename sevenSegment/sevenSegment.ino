@@ -11,7 +11,15 @@
 const int digitPins[] = {4, 3, 2, 8};
 const int digitPinsLength = sizeof(digitPins) / sizeof(digitPins[0]);
 // A B C D E F G DP
-const int segmentPins[] = {6, 5, 12, 10, 9, 7, 13, 11};
+const int pinA = 6;
+const int pinB = 5;
+const int pinC = 12;
+const int pinD = 10;
+const int pinE = 9;
+const int pinF = 7;
+const int pinG = 13;
+const int pinDP = 11;
+const int segmentPins[] = {pinA, pinB, pinC, pinD, pinE, pinF, pinG, pinDP};
 const int segmentPinsLength = sizeof(segmentPins) / sizeof(segmentPins[0]);
 
 const int digits[] = {
@@ -38,7 +46,7 @@ void displayNumber(int n)
   }
 }
 
-void displayNumbers()
+void updateDisplay()
 {
   int n = numberTemp;
   for (int i = 0; i < digitPinsLength; i++)
@@ -79,18 +87,16 @@ void setup()
 {
   for (int i = 0; i < digitPinsLength; i++)
   {
-    int pin = digitPins[i];
-    pinMode(pin, OUTPUT);
-    digitalWrite(pin, DIGIT_OFF);
+    pinMode(digitPins[i], OUTPUT);
+    digitalWrite(digitPins[i], DIGIT_OFF);
   }
   for (int i = 0; i < segmentPinsLength; i++)
   {
-    int pin = segmentPins[i];
-    pinMode(pin, OUTPUT);
-    digitalWrite(pin, SEGMENT_OFF);
+    pinMode(segmentPins[i], OUTPUT);
+    digitalWrite(segmentPins[i], SEGMENT_OFF);
   }
 
-  CurieTimerOne.start(1000, &displayNumbers);
+  CurieTimerOne.start(1000, &updateDisplay);
 }
 
 void loop()
