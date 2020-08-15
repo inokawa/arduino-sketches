@@ -69,6 +69,12 @@ void countUp()
   }
 }
 
+void slot()
+{
+  setNumbers(random(10000));
+  delay(50);
+}
+
 void setup()
 {
   for (int i = 0; i < digitPinsLength; i++)
@@ -90,4 +96,5 @@ void setup()
 void loop()
 {
   countUp();
+  // slot();
 }
