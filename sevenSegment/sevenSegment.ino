@@ -1,3 +1,6 @@
+// for Arduino/Genuino 101
+#include <CurieTimerOne.h>
+
 // for anode common 7 segment display
 #define DIGIT_ON HIGH
 #define DIGIT_OFF LOW
@@ -25,6 +28,8 @@ const int digits[] = {
 };
 const int dot = 0b10000000;
 
+int numberTemp = 0;
+
 void displayNumber(int n)
 {
   for (int i = 0; i < segmentPinsLength; i++)
@@ -33,13 +38,14 @@ void displayNumber(int n)
   }
 }
 
-void displayNumbers(int n)
+void displayNumbers()
 {
+  int n = numberTemp;
   for (int i = 0; i < digitPinsLength; i++)
   {
     digitalWrite(digitPins[i], DIGIT_ON);
     displayNumber(n % 10);
-    delay(1);
+    delayMicroseconds(100);
     for (int j = 0; j < segmentPinsLength; j++)
     {
       digitalWrite(segmentPins[j], SEGMENT_OFF);
@@ -49,11 +55,17 @@ void displayNumbers(int n)
   }
 }
 
+void setNumbers(int n)
+{
+  numberTemp = n;
+}
+
 void countUp()
 {
   for (int i = 0; i < 10000; i++)
   {
-    displayNumbers(i);
+    setNumbers(i);
+    delay(50);
   }
 }
 
@@ -71,6 +83,8 @@ void setup()
     pinMode(pin, OUTPUT);
     digitalWrite(pin, SEGMENT_OFF);
   }
+
+  CurieTimerOne.start(1000, &displayNumbers);
 }
 
 void loop()
